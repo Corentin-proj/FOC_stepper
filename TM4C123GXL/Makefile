@@ -1,6 +1,6 @@
 #******************************************************************************
 #
-# Makefile - Rules for building the FOC_toolchain project.
+# Makefile - Rules for building the project.
 #
 #For the TM4C123GXL
 #
@@ -32,10 +32,10 @@ VPATH=${ROOT}/utils
 IPATH=${ROOT}
 
 #
-# The default rule, which causes the FOC_toolchain project to be built.
+# The default rule, which causes the project to be built.
 #
 all: ${COMPILER}
-all: ${COMPILER}/FOC_toolchain.axf
+all: ${COMPILER}/main.axf
 
 #
 # The rule to clean out all the build products.
@@ -50,25 +50,24 @@ ${COMPILER}:
 	@mkdir -p ${COMPILER}
 
 #
-# Rules for building the FOC_toolchain project.
+# Rules for building the project.
 #
-${COMPILER}/FOC_toolchain.axf: ${COMPILER}/spwm.o
-${COMPILER}/FOC_toolchain.axf: ${COMPILER}/encoder.o
-${COMPILER}/FOC_toolchain.axf: ${COMPILER}/trigo.o
-${COMPILER}/FOC_toolchain.axf: ${COMPILER}/FOC_toolchain.o
-${COMPILER}/FOC_toolchain.axf: ${COMPILER}/startup_${COMPILER}.o
-${COMPILER}/FOC_toolchain.axf: ${COMPILER}/uartstdio.o
-${COMPILER}/FOC_toolchain.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
-${COMPILER}/FOC_toolchain.axf: linker.ld
-SCATTERgcc_FOC_toolchain=linker.ld
-ENTRY_FOC_toolchain=ResetISR
+${COMPILER}/main.axf: ${COMPILER}/encoder.o
+${COMPILER}/main.axf: ${COMPILER}/serial.o
+${COMPILER}/main.axf: ${COMPILER}/main.o
+${COMPILER}/main.axf: ${COMPILER}/startup_${COMPILER}.o
+${COMPILER}/main.axf: ${COMPILER}/uartstdio.o
+${COMPILER}/main.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
+${COMPILER}/main.axf: linker.ld
+SCATTERgcc_main=linker.ld
+ENTRY_main=ResetISR
 CFLAGSgcc=-DTARGET_IS_TM4C123_RB1
 
 #
 # Rules for flashing the code in the TM4C123GXL
 #
 flash:
-	@./lm4flash gcc/FOC_toolchain.bin
+	@lm4flash gcc/main.bin
 
 #
 # Include the automatically generated dependency files.

@@ -8,7 +8,7 @@
  */
 #include "encoder.h"
 
-void initEncoder(void){
+void initEncoder(int counts){
   // Enable the QEI0 peripheral
   SysCtlPeripheralEnable(SYSCTL_PERIPH_QEI0);
   // Wait for the QEI0 module to be ready.
@@ -18,7 +18,8 @@ void initEncoder(void){
   // 400 line encoder at four edges per line, there are 1600 pulses per
   // revolution; therefore set the maximum position to 1599 as the count
   // is zero based.
-  QEIConfigure(QEI_BASE, (QEI_CONFIG_CAPTURE_A_B | QEI_CONFIG_NO_RESET |QEI_CONFIG_QUADRATURE | QEI_CONFIG_NO_SWAP), 1599);
+  QEIConfigure(QEI0_BASE, (QEI_CONFIG_CAPTURE_A_B | QEI_CONFIG_NO_RESET |QEI_CONFIG_QUADRATURE | QEI_CONFIG_NO_SWAP), counts);
   // Enable the quadrature encoder.
-  QEIEnable(QEI_BASE);
+  QEIEnable(QEI0_BASE);
+  return;
 }
