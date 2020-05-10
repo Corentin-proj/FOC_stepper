@@ -14,6 +14,8 @@
 #include<string.h>
 #include<math.h>
 
+#include "driverlib/sysctl.h"
+
 #include "encoder.h"
 #include "serial.h"
 
@@ -34,22 +36,30 @@ char* itoa(int val, int base){
 }
 
 int main(void){
-  //First initialize quadrature encoder using a
+	uint32_t position=0;
+	//set the system clock to 80Mhz
+	SysCtlClockSet(SYSCTL_SYSDIV_2_5|SYSCTL_USE_PLL|SYSCTL_OSC_MAIN|SYSCTL_XTAL_16MHZ);
+  //Initialize quadrature encoder using a
   // 400 line encoder at four edges per line, there are 1600 pulses per
   // revolution; therefore set the maximum position to 1599 as the count
   // is zero based.
   initEncoder(1599);
-
+	// delay 3 x 3 clock cycles (clock at 80Mhz so clock cycle is 12,5ns)
+	// so it means delay for 112,5ns
+	SysCtlDelay(3);
   //init serial at 115200bps
   initSerial(115200);
-
+	//delay for 112,5ns
+	SysCtlDelay(3);
   //send test communication
-  sendSerial((uint8_t *)"Test", 5);
-
-  int someInt = 368;
-  sendSerial((uint8_t *)itoa(someInt,10), 12);// here 10 means decimal
+  sendSerial((uint8_t *)"Test\n", 6);
+	SysCtlDelay(6000);//delay for 250ms
   while(1){
-    //sendSerial((uint8_t *)"Test\n", 5);
+    position = QEIPositionGet(QEI0_BASE);
+		sendSerial((uint8_t *)itoa(position,10), 12);// here 10 means decimal
+		SysCtlDelay(6000);//delay for 250ms
+		sendSerial((uint8_t *)"\n",1);
+		SysCtlDelay(6000);//delay for 250ms
   }
   return 0;
 }
