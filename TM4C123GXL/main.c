@@ -15,6 +15,8 @@
 #include<math.h>
 
 #include "driverlib/sysctl.h"
+#include "driverlib/uart.h"
+#include "utils/uartstdio.h"
 
 #include "encoder.h"
 #include "serial.h"
@@ -52,14 +54,16 @@ int main(void){
 	//delay for 112,5ns
 	SysCtlDelay(3);
   //send test communication
-  sendSerial((uint8_t *)"Test\n", 6);
+  //sendSerial((uint8_t *)"Test\n", 6);
+	UARTprintf("Test\n");
 	SysCtlDelay(6000);//delay for 250ms
   while(1){
     position = QEIPositionGet(QEI0_BASE);
-		sendSerial((uint8_t *)itoa(position,10), 12);// here 10 means decimal
+		//sendSerial((uint8_t *)itoa(position,10), 12);// here 10 means decimal
+		UARTprintf("%d\n",position);
 		SysCtlDelay(6000);//delay for 250ms
-		sendSerial((uint8_t *)"\n",1);
-		SysCtlDelay(6000);//delay for 250ms
+		//sendSerial((uint8_t *)"\n",1);
+		//SysCtlDelay(6000);//delay for 250ms
   }
   return 0;
 }

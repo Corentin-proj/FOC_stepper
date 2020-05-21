@@ -2,7 +2,7 @@
  * serial.c
  * Created on: May 9, 2020
  * Author: Corentin Casier
- * Last update: May 9, 2020
+ * Last update: May 22, 2020
  * This code manage the serial interface of the TM4C123GXL
  *
  */
@@ -14,6 +14,7 @@
 //
 //*****************************************************************************
 void initSerial(int baudrate){
+  /*
   //
   // Enable lazy stacking for interrupt handlers.  This allows floating-point
   // instructions to be used within interrupt handlers, but at the expense of
@@ -48,6 +49,33 @@ void initSerial(int baudrate){
   // Configure the UART for 115,200, 8-N-1 operation.
   //
   MAP_UARTConfigSetExpClk(UART0_BASE, MAP_SysCtlClockGet(), 115200,(UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |UART_CONFIG_PAR_NONE));
+  */
+  //
+  // Enable the GPIO Peripheral used by the UART.
+  //
+  MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+
+  //
+  // Enable UART0.
+  //
+  MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
+
+  //
+  // Configure GPIO Pins for UART mode.
+  //
+  MAP_GPIOPinConfigure(GPIO_PA0_U0RX);
+  MAP_GPIOPinConfigure(GPIO_PA1_U0TX);
+  MAP_GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+
+  //
+  // Use the internal 16MHz oscillator as the UART clock source.
+  //
+  UARTClockSourceSet(UART0_BASE, UART_CLOCK_PIOSC);
+
+  //
+  // Initialize the UART for console I/O.
+  //
+  UARTStdioConfig(0, baudrate, 16000000);
   return;
 }
 

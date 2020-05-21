@@ -2,7 +2,7 @@
  * serial.h
  * Created on: May 9, 2020
  * Author: Corentin Casier
- * Last update: May 9, 2020
+ * Last update: May 22, 2020
  * This file contains the prototypes of the functions of serial.c
  *
  */
@@ -23,6 +23,7 @@
 #include "driverlib/rom_map.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/uart.h"
+#include "utils/uartstdio.h"
 
 void initSerial(int baudrate);
 void sendSerial(const uint8_t *pui8Buffer, uint32_t ui32Count);
