@@ -19,7 +19,10 @@
 #include "driverlib/rom.h"
 #include "driverlib/rom_map.h"
 #include "driverlib/sysctl.h"
+#include "driverlib/fpu.h"
 
 void initStepper(void);
+void setVoltage_PhaseA(int32_t voltage);
+void setVoltage_PhaseB(int32_t voltage);
 
 #endif

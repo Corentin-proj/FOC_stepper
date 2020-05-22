@@ -4,7 +4,8 @@
  * Author: Corentin Casier
  * Last update: May 22, 2020
  * This code manage the stepper motor (the voltage across its phases)
- * PWM phase A is on PB6 and PWM phase B on PB7
+ * PWM phase A is on PB6 and PWM phase B on PB7.
+ * Direction phase A is on PC7 and direction phase B on PC6
  *
  */
 #include "stepper.h"
@@ -14,31 +15,30 @@
 // Configure PWM for a 25% duty cycle signal running at 250Hz.
 //
 //*****************************************************************************
-void initStepper(void)
-{
+void initStepper(void){
+    //enable floating point operations
+    MAP_FPULazyStackingEnable();
+    MAP_FPUEnable();
+
+    //
     //
     // Set the clocking to run directly from the external crystal/oscillator.
     //
-    /*
-    MAP_SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
-    */
+    //MAP_SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
 
     //
     // Set the PWM clock to the system clock.
     //
     MAP_SysCtlPWMClockSet(SYSCTL_PWMDIV_1);
-    /*
+
     //
-    // Display the setup on the console.
+    // Enable the GPIO port C.
     //
-    UARTprintf("PWM ->\n");
-    UARTprintf("  Module: PWM0\n");
-    UARTprintf("  Pin: PB6\n");
-    UARTprintf("  Configured Duty Cycle: 25%%\n");
-    UARTprintf("  Inverted Duty Cycle: 75%%\n");
-    UARTprintf("  Features: PWM output inversion every 2 seconds.\n\n");
-    UARTprintf("Generating PWM on PWM0 (PB6) -> State = ");
-    */
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
+    //
+    // Enable the GPIO pin PC6 and PC7 as outputs.
+    //
+    MAP_GPIOPinTypeGPIOOutput(GPIO_PORTC_BASE, GPIO_PIN_6 | GPIO_PIN_7);
 
     //
     // The PWM peripheral must be enabled for use.
@@ -79,9 +79,9 @@ void initStepper(void)
     //
     //MAP_PWMPulseWidthSet(PWM0_BASE, PWM_OUT_0, MAP_PWMGenPeriodGet(PWM0_BASE, PWM_GEN_0) / 4);
     //here the duty cycle is 0% on PB6
-    MAP_PWMPulseWidthSet(PWM0_BASE, PWM_OUT_0, MAP_PWMGenPeriodGet(PWM0_BASE, PWM_GEN_0) * 0);
+    MAP_PWMPulseWidthSet(PWM0_BASE, PWM_OUT_0, MAP_PWMGenPeriodGet(PWM0_BASE, PWM_GEN_0) * 0.1);
     //here the duty cycle is 0% on PB7
-    MAP_PWMPulseWidthSet(PWM0_BASE, PWM_OUT_1, MAP_PWMGenPeriodGet(PWM0_BASE, PWM_GEN_0) * 0);
+    MAP_PWMPulseWidthSet(PWM0_BASE, PWM_OUT_1, MAP_PWMGenPeriodGet(PWM0_BASE, PWM_GEN_0) * 0.1);
 
     //
     // Enable PWM Out Bit 0 (PB6) output signal.
@@ -92,5 +92,52 @@ void initStepper(void)
     // Enable the PWM generator block.
     //
     MAP_PWMGenEnable(PWM0_BASE, PWM_GEN_0);
+
     return;
+}
+
+//get the voltage across phase A
+//voltage = 1000 means 100% positiv
+//voltage = -1000 means 100% negativ
+void setVoltage_PhaseA(int32_t voltage){
+  //if positiv put direction pin (PC7) to HIGH else to LOW
+  if(voltage>=0){
+    MAP_GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_7, GPIO_PIN_7);
+  }
+  else{
+    MAP_GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_7, 0x00);
+    voltage = -voltage;
+  }
+
+  if(voltage < 1){
+    voltage = 1;
+  }
+  else if(voltage > 999){
+    voltage = 999;
+  }
+  MAP_PWMPulseWidthSet(PWM0_BASE, PWM_OUT_0, MAP_PWMGenPeriodGet(PWM0_BASE, PWM_GEN_0) * voltage/1000);
+  return;
+}
+
+//get the voltage across phase B
+//voltage = 1000 means 100% positiv
+//voltage = -1000 means 100% negativ
+void setVoltage_PhaseB(int32_t voltage){
+  //if positiv put direction pin (PC6) to HIGH else to LOW
+  if(voltage>=0){
+    MAP_GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_6, GPIO_PIN_6);
+  }
+  else{
+    MAP_GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_6, 0x00);
+    voltage = -voltage;
+  }
+
+  if(voltage < 1){
+    voltage = 1;
+  }
+  else if(voltage > 999){
+    voltage = 999;
+  }
+  MAP_PWMPulseWidthSet(PWM0_BASE, PWM_OUT_1, MAP_PWMGenPeriodGet(PWM0_BASE, PWM_GEN_0) * voltage/1000);
+  return;
 }

@@ -20,22 +20,7 @@
 
 #include "encoder.h"
 #include "serial.h"
-
-
-//convert int to char
-char* itoa(int val, int base){
-
-	static char buf[32] = {0};
-
-	int i = 30;
-
-	for(; val && i ; --i, val /= base)
-
-		buf[i] = "0123456789abcdef"[val % base];
-
-	return &buf[i+1];
-
-}
+#include "stepper.h"
 
 int main(void){
 	uint32_t position=0;
@@ -49,21 +34,23 @@ int main(void){
 	// delay 3 x 3 clock cycles (clock at 80Mhz so clock cycle is 12,5ns)
 	// so it means delay for 112,5ns
 	SysCtlDelay(3);
+
+	initStepper();
+	SysCtlDelay(3);
   //init serial at 115200bps
   initSerial(115200);
 	//delay for 112,5ns
 	SysCtlDelay(3);
-  //send test communication
-  //sendSerial((uint8_t *)"Test\n", 6);
-	UARTprintf("Test\n");
+	UARTprintf("Ready\n");
+	SysCtlDelay(6000);//delay for 250ms
+	UARTprintf("Starting loop\n");
 	SysCtlDelay(6000);//delay for 250ms
   while(1){
     position = QEIPositionGet(QEI0_BASE);
-		//sendSerial((uint8_t *)itoa(position,10), 12);// here 10 means decimal
-		UARTprintf("%d\n",position);
+		setVoltage_PhaseA(position-750);
+		setVoltage_PhaseB(position-750);
+		UARTprintf("%d\n",position-750);
 		SysCtlDelay(6000);//delay for 250ms
-		//sendSerial((uint8_t *)"\n",1);
-		//SysCtlDelay(6000);//delay for 250ms
   }
   return 0;
 }
