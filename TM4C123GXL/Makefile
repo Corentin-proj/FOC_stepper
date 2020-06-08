@@ -54,7 +54,8 @@ ${COMPILER}:
 #
 ${COMPILER}/main.axf: ${COMPILER}/encoder.o
 ${COMPILER}/main.axf: ${COMPILER}/serial.o
-${COMPILER}/main.axf: ${COMPILER}/stepper.o	
+${COMPILER}/main.axf: ${COMPILER}/stepper.o
+${COMPILER}/main.axf: ${COMPILER}/FOC.o
 ${COMPILER}/main.axf: ${COMPILER}/main.o
 ${COMPILER}/main.axf: ${COMPILER}/startup_${COMPILER}.o
 ${COMPILER}/main.axf: ${COMPILER}/uartstdio.o
