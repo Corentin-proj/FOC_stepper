@@ -96,16 +96,18 @@ void initStepper(void){
     return;
 }
 
-//get the voltage across phase A
+//set the voltage across phase A
 //voltage = 1000 means 100% positiv
 //voltage = -1000 means 100% negativ
 void setVoltage_PhaseA(int32_t voltage){
-  //if positiv put direction pin (PC7) to HIGH else to LOW
+  //if positiv put direction pin (PC7) to HIGH else to LOW and invert PWM
   if(voltage>=0){
-    MAP_GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_7, GPIO_PIN_7);
+    MAP_GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_7, 0x00);
+    MAP_PWMOutputInvert(PWM0_BASE, PWM_OUT_0_BIT, false);
   }
   else{
-    MAP_GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_7, 0x00);
+    MAP_GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_7, GPIO_PIN_7);
+    MAP_PWMOutputInvert(PWM0_BASE, PWM_OUT_0_BIT, true);
     voltage = -voltage;
   }
 
@@ -119,16 +121,18 @@ void setVoltage_PhaseA(int32_t voltage){
   return;
 }
 
-//get the voltage across phase B
+//set the voltage across phase B
 //voltage = 1000 means 100% positiv
 //voltage = -1000 means 100% negativ
 void setVoltage_PhaseB(int32_t voltage){
-  //if positiv put direction pin (PC6) to HIGH else to LOW
+  //if positiv put direction pin (PC6) to HIGH else to LOW and invert PWM
   if(voltage>=0){
-    MAP_GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_6, GPIO_PIN_6);
+    MAP_GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_6, 0x00);
+    MAP_PWMOutputInvert(PWM0_BASE, PWM_OUT_1_BIT, false);
   }
   else{
-    MAP_GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_6, 0x00);
+    MAP_GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_6, GPIO_PIN_6);
+    MAP_PWMOutputInvert(PWM0_BASE, PWM_OUT_1_BIT, true);
     voltage = -voltage;
   }
 
