@@ -47,7 +47,8 @@ void wait(int millis){
 }
 
 int main(void){
-	uint32_t position=0;
+	uint32_t position=0, d=0, q=0, elecAngle=0, alpha=0, beta=0;
+  int poles = 100;//number of rotor poles
 	//set the system clock to 80Mhz
 	SysCtlClockSet(SYSCTL_SYSDIV_2_5|SYSCTL_USE_PLL|SYSCTL_OSC_MAIN|SYSCTL_XTAL_16MHZ);
 
@@ -58,24 +59,39 @@ int main(void){
   // 400 line encoder at four edges per line, there are 1600 pulses per
   // revolution; therefore set the maximum position to 1599 as the count
   // is zero based.
-  initEncoder(1599);
+  uint32_t maxEncoder = 1599;//maximum encoder value
+  initEncoder(maxEncoder);
 	// delay 3 x 3 clock cycles (clock at 80Mhz so clock cycle is 12,5ns)
 	// so it means delay for 112,5ns
 	SysCtlDelay(3);
 
 	initStepper();
 	SysCtlDelay(3);
+  setVoltage_PhaseA(1000);
+  setVoltage_PhaseB(1000);
+  SysCtlDelay(3);
   //init serial at 115200bps
   initSerial(115200);
 	//delay for 112,5ns
 	SysCtlDelay(3);
 	UARTprintf("Ready\n");
-	SysCtlDelay(6000);//delay for 250ms
+	wait(250);
 	UARTprintf("Starting loop\n");
-	SysCtlDelay(6000);//delay for 250ms
-  while(1){
-    //position = QEIPositionGet(QEI0_BASE);
+	wait(250);
 
+  while(1){
+    position = QEIPositionGet(QEI0_BASE);
+    elecAngle = mech2elec(poles, position * ((2*M_PI)/maxEncoder));
+    alpha = invParkAlpha(d,q,elecAngle);
+    beta = invParkBeta(d,q,elecAngle);
+    setVoltage_PhaseA(alpha);
+    setVoltage_PhaseB(beta);
+    UARTprintf("alpha=%d",alpha);
+    UARTprintf(" beta=%d",beta);
+    UARTprintf(" elecAngle=%d\n",elecAngle);
+    wait(250);
+
+/*
 		setVoltage_PhaseA(1000);
 		setVoltage_PhaseB(1000);
 		wait(10);
@@ -100,6 +116,7 @@ int main(void){
 		setVoltage_PhaseA(1000);
 		setVoltage_PhaseB(0);
 		wait(10);
+    */
   }
   return 0;
 }
