@@ -11,6 +11,13 @@
  */
 #include "FOC.h"
 
+void initFOC(){
+  //enable floating point operations
+  MAP_FPULazyStackingEnable();
+  MAP_FPUEnable();
+  return;
+}
+
 // Half of a simplified inverse Park transformation (returns only the Alpha Voltage)
 float invParkAlpha(float d, float q, float theta){
   float alpha = 0.0;

@@ -18,6 +18,7 @@
 #include "driverlib/rom_map.h"
 #include "driverlib/fpu.h"
 
+void initFOC(void);
 float invParkAlpha(float d, float q, float theta);
 float invParkBeta(float d, float q, float theta);
 float mech2elec(int poles, float thetaMech);

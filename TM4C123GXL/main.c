@@ -20,10 +20,16 @@
 #include "driverlib/timer.h"
 #include "inc/hw_ints.h"
 #include "inc/hw_memmap.h"
+#include "driverlib/rom.h"
+#include "driverlib/rom_map.h"
+#include "driverlib/fpu.h"
 
 #include "encoder.h"
 #include "serial.h"
 #include "stepper.h"
+#include "FOC.h"
+
+#define M_PI 3.14159265358979323846
 
 // WTimer5
 void Init_Uptime(void){
@@ -47,8 +53,17 @@ void wait(int millis){
 }
 
 int main(void){
-	uint32_t position=0, d=0, q=0, elecAngle=0, alpha=0, beta=0;
+	uint32_t position=0;
+  float d=1000.0, q=0.0, elecAngle=0.0, alpha=0.0, beta=0.0;
   int poles = 100;//number of rotor poles
+
+  //enable floating point operations
+  MAP_FPULazyStackingEnable();
+  MAP_FPUEnable();
+
+  //Initialize Field Oriented Control
+  //void initFOC();
+
 	//set the system clock to 80Mhz
 	SysCtlClockSet(SYSCTL_SYSDIV_2_5|SYSCTL_USE_PLL|SYSCTL_OSC_MAIN|SYSCTL_XTAL_16MHZ);
 
@@ -81,14 +96,14 @@ int main(void){
 
   while(1){
     position = QEIPositionGet(QEI0_BASE);
-    elecAngle = mech2elec(poles, position * ((2*M_PI)/maxEncoder));
+    elecAngle = mech2elec(poles, position * (2*M_PI/maxEncoder));
     alpha = invParkAlpha(d,q,elecAngle);
     beta = invParkBeta(d,q,elecAngle);
-    setVoltage_PhaseA(alpha);
-    setVoltage_PhaseB(beta);
-    UARTprintf("alpha=%d",alpha);
-    UARTprintf(" beta=%d",beta);
-    UARTprintf(" elecAngle=%d\n",elecAngle);
+    setVoltage_PhaseA((int32_t)alpha);
+    setVoltage_PhaseB((int32_t)beta);
+    UARTprintf("alpha=%d",(int32_t)alpha);
+    UARTprintf(" beta=%d",(int32_t)beta);
+    UARTprintf(" elecAngle=%d\n",(int32_t)elecAngle);
     wait(250);
 
 /*
