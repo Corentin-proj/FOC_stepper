@@ -101,10 +101,10 @@ int main(void){
     beta = invParkBeta(d,q,elecAngle);
     setVoltage_PhaseA((int32_t)alpha);
     setVoltage_PhaseB((int32_t)beta);
-    UARTprintf("alpha=%d",(int32_t)alpha);
-    UARTprintf(" beta=%d",(int32_t)beta);
-    UARTprintf(" elecAngle=%d\n",(int32_t)elecAngle);
-    wait(250);
+    //UARTprintf("alpha=%d",(int32_t)alpha);
+    //UARTprintf(" beta=%d",(int32_t)beta);
+    //UARTprintf(" elecAngle=%d\n",(int32_t)elecAngle);
+    wait(5);
 
 /*
 		setVoltage_PhaseA(1000);
