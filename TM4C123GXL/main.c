@@ -54,7 +54,7 @@ void wait(int millis){
 
 int main(void){
 	uint32_t position=0;
-  float d=1000.0, q=0.0, elecAngle=0.0, alpha=0.0, beta=0.0;
+  float d=0.0, q=1000.0, elecAngle=0.0, alpha=0.0, beta=0.0;
   int poles = 100;//number of rotor poles
 
   //enable floating point operations
@@ -70,6 +70,14 @@ int main(void){
 	//Initialize Timer to get elapsed time
 	Init_Uptime();
 
+  SysCtlDelay(3);
+
+  initStepper();
+	SysCtlDelay(3);
+  setVoltage_PhaseA(1000);
+  setVoltage_PhaseB(1000);
+  SysCtlDelay(3);
+
   //Initialize quadrature encoder using a
   // 400 line encoder at four edges per line, there are 1600 pulses per
   // revolution; therefore set the maximum position to 1599 as the count
@@ -80,11 +88,6 @@ int main(void){
 	// so it means delay for 112,5ns
 	SysCtlDelay(3);
 
-	initStepper();
-	SysCtlDelay(3);
-  setVoltage_PhaseA(1000);
-  setVoltage_PhaseB(1000);
-  SysCtlDelay(3);
   //init serial at 115200bps
   initSerial(115200);
 	//delay for 112,5ns
@@ -101,7 +104,7 @@ int main(void){
     beta = invParkBeta(d,q,elecAngle);
     setVoltage_PhaseA((int32_t)alpha);
     setVoltage_PhaseB((int32_t)beta);
-    //UARTprintf("alpha=%d",(int32_t)alpha);
+    UARTprintf("alpha=%d beta=%d elecAngle=%d\n",(int32_t)alpha,(int32_t)beta,(int32_t)elecAngle);
     //UARTprintf(" beta=%d",(int32_t)beta);
     //UARTprintf(" elecAngle=%d\n",(int32_t)elecAngle);
     wait(5);
