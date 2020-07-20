@@ -55,7 +55,7 @@ void wait(int millis){
 int main(void){
 	uint32_t position=0;
   float d=0.0, q=1000.0, elecAngle=0.0, alpha=0.0, beta=0.0;
-  int poles = 100;//number of rotor poles
+  int poles = 400;//number of rotor poles
 
   //enable floating point operations
   MAP_FPULazyStackingEnable();
