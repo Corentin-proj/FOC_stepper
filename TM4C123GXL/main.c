@@ -99,7 +99,8 @@ int main(void){
 
   while(1){
     position = QEIPositionGet(QEI0_BASE);
-    elecAngle = mech2elec(poles, position * (2*M_PI/maxEncoder));
+    //elecAngle = mech2elec(poles, position * (2*M_PI/maxEncoder));
+    elecAngle = mech2elec(poles, position * (360/maxEncoder));//electrical angle in degrees
     alpha = invParkAlpha(d,q,elecAngle);
     beta = invParkBeta(d,q,elecAngle);
     setVoltage_PhaseA((int32_t)alpha);
