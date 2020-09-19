@@ -80,9 +80,11 @@ int main(void){
 
   //Initialize quadrature encoder using a
   // 400 line encoder at four edges per line, there are 1600 pulses per
-  // revolution; therefore set the maximum position to 1599 as the count
+  // revolution and there is a gearbox of ratio 2:1 between the motor
+  // and the encoder; therefore set the maximum position to 1600*2-1=3199 as the count
   // is zero based.
-  uint32_t maxEncoder = 1599;//maximum encoder value
+  //uint32_t maxEncoder = 1599;//maximum encoder value
+  uint32_t maxEncoder = 3199;//maximum encoder value
   initEncoder(maxEncoder);
 	// delay 3 x 3 clock cycles (clock at 80Mhz so clock cycle is 12,5ns)
 	// so it means delay for 112,5ns
