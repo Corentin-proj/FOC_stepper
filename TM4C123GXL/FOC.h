@@ -19,6 +19,9 @@
 #include "driverlib/fpu.h"
 
 void initFOC(void);
+float _sin(float angle);
+float _cos(float angle);
+float _wrapAngle(float angle)
 float invParkAlpha(float d, float q, float theta);
 float invParkBeta(float d, float q, float theta);
 float mech2elec(int poles, float thetaMech);
