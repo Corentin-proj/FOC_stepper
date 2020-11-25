@@ -2,7 +2,7 @@
  * FOC.h
  * Created on: June 8, 2020
  * Author: Corentin Casier
- * Last update: June 8, 2020
+ * Last update: November 25, 2020
  * This file contains the prototypes of the functions of FOC.c
  *
  */
@@ -22,8 +22,8 @@ void initFOC(void);
 float _sin(float angle);
 float _cos(float angle);
 float _wrapAngle(float angle)
-float invParkAlpha(float d, float q, float theta);
-float invParkBeta(float d, float q, float theta);
+float invParkAlpha(float Vd, float Vq, float theta);
+float invParkBeta(float Vd, float Vq, float theta);
 float mech2elec(int poles, float thetaMech);
 
 #endif
